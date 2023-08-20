@@ -1,6 +1,6 @@
 export const cities = ["Тель-Авив", "Акко", "Ариэль"];
 
-export const estateType = [
+export const estateTypes = [
   "Квартира от застройщика",
   "Квартира на вторичном рынке",
   "Частный дом",
@@ -8,7 +8,7 @@ export const estateType = [
   "Коммерческая Недвижимость",
 ];
 
-export const period = [
+export const periods = [
   "В ближайший месяц",
   "В ближайшие 2 месяца",
   "В ближайшие 3 месяца",

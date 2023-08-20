@@ -4,7 +4,23 @@
   align-items: center;
   justify-content: flex-start;
   max-width: 1440px;
-  padding: 150px;
+  height: 100%;
+  padding: 5%;
   margin: auto;
-  background-color: black
+  background-color: black;
+}
+
+@media screen and (max-width: 889px) {
+  .page {
+    max-width: 100%;
+    padding-top: 100px;
+    padding-left: 20px;
+    margin: auto;
+  }
+}
+
+@media screen and (min-width: 890px) and (max-width: 1140px) {
+  .page {
+    padding: 80px 50px 50px 50px;
+  }
 }
