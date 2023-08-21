@@ -5,9 +5,9 @@ import appstyles from "./App.module.css";
 function App() {
   return (
     <div className={appstyles.page}>
-      <Calculator/>
+      <Calculator />
     </div>
-  )
+  );
 }
 
 export default App;
