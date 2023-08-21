@@ -96,7 +96,7 @@ export const Calculator = () => {
 
   useEffect(() => {
     setPercent(Math.floor((downPayment * 100) / price));
-  }, [downPayment]);
+  }, [downPayment, price]);
 
   const ownershipHandler = () => {
     if (ownershipType === "Нет, я пока не владею недвижимостью") {
@@ -123,11 +123,11 @@ export const Calculator = () => {
 
   useEffect(() => {
     ownershipHandler();
-  }, [ownershipType]);
+  }, [ownershipType, ownershipHandler]);
 
   useEffect(() => {
     paymentCalculation();
-  }, [price, downPayment, duration]);
+  }, [price, downPayment, duration, paymentCalculation]);
 
   return (
     <div className={calculatorStyles.container}>

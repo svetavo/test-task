@@ -54,6 +54,7 @@ export const Select = ({ title, list, placeholder, value, onClickItem }) => {
           {value ? value : placeholder}{" "}
           <img
             src={arrow}
+            alt="стрелка"
             className={!active ? `${selectStyles.input_img}` : null}
           />
         </button>
@@ -62,7 +63,7 @@ export const Select = ({ title, list, placeholder, value, onClickItem }) => {
           <div id="dropdown" className={selectStyles.list}>
             {list === cities ? (
               <div className={selectStyles.search_input}>
-                <img src={searchIcon} className={selectStyles.search_img} />
+                <img src={searchIcon} className={selectStyles.search_img} alt="поиск"/>
                 <input
                   type="text"
                   placeholder="Поиск.."
