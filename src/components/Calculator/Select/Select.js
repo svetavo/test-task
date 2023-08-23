@@ -1,11 +1,23 @@
 import { useState } from "react";
-import { cities } from "../../../data/data";
+import { cities, ownership } from "../../../data/data";
 import selectStyles from "./Select.module.css";
+import calculatorStyles from '../../Calculator/Calculator.module.css';
 import searchIcon from "../../../images/search.svg";
 import arrow from "../../../images/arrow.svg";
+import checkedIcon from "../../../images/check.svg";
 
-export const Select = ({ title, list, placeholder, value, onClickItem }) => {
+export const Select = ({
+  title,
+  id,
+  list,
+  placeholder,
+  value,
+  price,
+  onClickItem,
+  setDownPayment
+}) => {
   const [active, setActive] = useState(false);
+  const [checked, setChecked] = useState("");
   const [filteredList, setFilteredList] = new useState(list);
 
   const showDropdown = () => {
@@ -18,6 +30,10 @@ export const Select = ({ title, list, placeholder, value, onClickItem }) => {
 
   const onClick = (element) => {
     onClickItem(element);
+    setChecked(element);
+    if (list === ownership) {
+    setDownPayment(Math.round(price / 2))
+    }
     hideDropdown();
   };
 
@@ -61,9 +77,13 @@ export const Select = ({ title, list, placeholder, value, onClickItem }) => {
 
         {active ? (
           <div id="dropdown" className={selectStyles.list}>
-            {list === cities ? (
+            {id === "city" ? (
               <div className={selectStyles.search_input}>
-                <img src={searchIcon} className={selectStyles.search_img} alt="поиск"/>
+                <img
+                  src={searchIcon}
+                  className={selectStyles.search_img}
+                  alt="поиск"
+                />
                 <input
                   type="text"
                   placeholder="Поиск.."
@@ -74,22 +94,20 @@ export const Select = ({ title, list, placeholder, value, onClickItem }) => {
             ) : null}
             {list !== cities
               ? list.map((element, index) => (
-                  <p
-                    className={selectStyles.list_element}
-                    key={index}
-                    onClick={() => onClick(element)}
-                  >
-                    {element}
-                  </p>
+                  <div className={selectStyles.list_element}>
+                    <p key={index} onClick={() => onClick(element)}>
+                      {element}{" "}
+                    </p>
+                    {checked === element ? <img src={checkedIcon} /> : null}
+                  </div>
                 ))
               : filteredList.sort().map((element, index) => (
-                  <p
-                    className={selectStyles.list_element}
-                    key={index}
-                    onClick={() => onClick(element)}
-                  >
-                    {element}
-                  </p>
+                  <div className={selectStyles.list_element}>
+                    <p key={index} onClick={() => onClick(element)}>
+                      {element}{" "}
+                    </p>{" "}
+                    {checked === element ? <img src={checkedIcon} /> : null}
+                  </div>
                 ))}
           </div>
         ) : null}

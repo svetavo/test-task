@@ -4,14 +4,16 @@ import infoIcon from "../../../images/info.svg";
 import warningWhite from "../../../images/warning_white.svg";
 import warningIcom from "../../../images/warning.svg";
 import { useState } from "react";
+import Slider from "../../Slider/Slider";
 
 export const Input = ({
+  id,
+  loan,
   title,
   value,
-  slider,
-  info,
   onChange,
   currency,
+  defaultValue,
   percent,
   max,
   min,
@@ -22,6 +24,14 @@ export const Input = ({
   errorText,
   error,
   isErrorActive,
+  setDownpayError,
+  setDurationError,
+  setIsErrorActive,
+  price,
+  duration,
+  downPayment,
+  setMonthlypaymentError,
+  durationCalculation,
 }) => {
   const [hintActive, setHintActive] = useState(false);
 
@@ -31,20 +41,48 @@ export const Input = ({
     }
   };
 
-  const dragHandlerDownPayment = (e) => {
-    onChange(e);
-    setDownPayment(Number(e.target.value));
+  const onChangeDownPayment = (value) => {
+    if (Number(value) < (price * 25) / 100) {
+      setDownpayError(true);
+      setIsErrorActive(true);
+    } else if (Number(value) > price) {
+      setIsErrorActive(true);
+      setDownpayError(true);
+    } else {
+      setDownpayError(false);
+      setIsErrorActive(false);
+    }
+    setDownPayment(Number(value));
   };
 
-  const dragHandlerDuration = (e) => {
-    onChange(e);
-    setDuration(Number(e.target.value));
+  const onChangeDuration = (value) => {
+    if (Number(value) > 30) {
+      setDurationError(true);
+      setIsErrorActive(true);
+    } else if (Number(value) < 4) {
+      setDurationError(true);
+      setIsErrorActive(true);
+    } else {
+      setDurationError(false);
+      setIsErrorActive(false);
+    }
+    setDuration(value);
   };
 
-  const dragHandlerMonthlyPayment = (e) => {
-    setMonthlyPayment(e.target.value);
+  const onChangeMonthlyPayment = (value) => {
+    if (Number(value) < Math.round((price - downPayment) / (duration * 12))) {
+      setMonthlypaymentError(true);
+      setIsErrorActive(true);
+    } else {
+      setMonthlypaymentError(false);
+      setIsErrorActive(false);
+    }
+    setMonthlyPayment(Number(value));
+    setDuration(Number((loan / Number(value) / 12).toFixed(0)));
+    console.log(duration);
   };
 
+  // формат числа
   const getFormatValue = (value) => {
     console.log(value);
     return new Intl.NumberFormat("en-GB", {
@@ -56,7 +94,7 @@ export const Input = ({
     <div className={inputStyles.item}>
       <h3 className={inputStyles.title}>
         {title}
-        {info && setDownPayment ? (
+        {id === "downpayment" ? (
           <img
             src={infoIcon}
             className={inputStyles.title_img}
@@ -67,11 +105,11 @@ export const Input = ({
         ) : null}
         {hintActive ? (
           <div className={inputStyles.hint_container}>
-            <p>
+            <p className={inputStyles.hint_text}>
               Основная квартира: у заемщика нет квартиры, ставка финансирования
               максимум до 75%
             </p>
-            <p>
+            <p className={inputStyles.hint_text}>
               Альтернативная квартира: Для заемщика квартира, которую он
               обязуется продать в течение двух лет, ставка финансирования
               максимум до 70%
@@ -90,11 +128,13 @@ export const Input = ({
               ? `${inputStyles.input} ${inputStyles.input_error}`
               : `${inputStyles.input}`
           }
-          type="text"
+          type="number"
+          min={0}
           max={max}
           onChange={onChange}
           value={value}
           onKeyPress={(e) => validateNumbers(e)}
+          maxLength={8}
         ></input>
         {currency ? (
           <img
@@ -105,47 +145,52 @@ export const Input = ({
         ) : null}
       </div>
 
-      {slider && setDownPayment ? (
-        <input
-          className={inputStyles.slider}
-          type="range"
-          onChange={dragHandlerDownPayment}
-          min={0}
-          defaultValue={Number(value)}
+      {id === "downpayment" ? (
+        <Slider
+          min={min}
           max={max}
           step={1}
-        ></input>
+          value={Number(value)}
+          defaultValue={500000}
+          onChange={(value) => onChangeDownPayment(Number(value))}
+        />
       ) : null}
 
-      {slider && setDuration ? (
-        <input
-          className={inputStyles.slider}
-          type="range"
-          onChange={dragHandlerDuration}
-          min={4}
-          max={30}
-          step={1}
-        ></input>
-      ) : null}
-
-      {slider && monthlyPayment ? (
+      {id === "duration" ? (
         <div>
-          <input
-            className={inputStyles.slider}
-            type="range"
-            onChange={dragHandlerMonthlyPayment}
-            min={min}
-            max={max}
+          <Slider
+            min={4}
+            max={30}
             step={1}
-          ></input>
+            defaultValue={30}
+            value={Number(value)}
+            onChange={(value) => onChangeDuration(Number(value))}
+          />
           <div className={inputStyles.slider_text_container}>
-            <p className={inputStyles.slider_text}>{getFormatValue(min)} ₪</p>
-            <p className={inputStyles.slider_text}>{getFormatValue(max)} ₪</p>
+            <p className={inputStyles.slider_text}>4 года</p>
+            <p className={inputStyles.slider_text}>30 лет</p>
           </div>
         </div>
       ) : null}
 
-      {info && setDownPayment ? (
+      {id === "payment" ? (
+        <div>
+          <Slider
+            min={min}
+            max={max}
+            step={1}
+            value={monthlyPayment}
+            defaultValue={defaultValue}
+            onChange={(value) => onChangeMonthlyPayment(Number(value))}
+          />
+          <div className={inputStyles.slider_text_container}>
+            <p className={inputStyles.slider_text}>{min} ₪</p>
+            <p className={inputStyles.slider_text}>{max} ₪</p>
+          </div>
+        </div>
+      ) : null}
+
+      {id === "downpayment" ? (
         <div className={inputStyles.info_container}>
           <img
             className={inputStyles.info_img}
@@ -165,7 +210,7 @@ export const Input = ({
         </div>
       ) : null}
 
-      {info && monthlyPayment ? (
+      {id === "payment" ? (
         <div className={inputStyles.info_container}>
           <img
             className={inputStyles.info_img}

@@ -1,0 +1,19 @@
+.slider {
+  width: 100%;
+  margin: auto;
+  height: 2px;
+  top: -18px;
+}
+
+.slider_thumb {
+  cursor: pointer;
+  background: var(--yellow-color);
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  outline: none;
+}
+
+.slider_thumb:hover {
+  cursor: pointer;
+}
